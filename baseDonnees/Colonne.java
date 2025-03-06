@@ -16,22 +16,18 @@ public class Colonne<V> {
         valeurs.add(valeur);
     }
     public V obtenirValeur(int index){
-        verifierIndex(index);
         return valeurs.get(index);
     }
     public int obtenirIndex(V valeur){
         return valeurs.indexOf(valeur);
     }
     public void changerValeur(int index, V valeur){
-        verifierIndex(index);
+        this.valeurs.set(index, valeur);
     }
     public int getNbElements(){
         return valeurs.size();
     }
     public void afficherContenu(){
         System.out.println(valeurs);
-    }
-    private void verifierIndex(int index){
-        
     }
 }
