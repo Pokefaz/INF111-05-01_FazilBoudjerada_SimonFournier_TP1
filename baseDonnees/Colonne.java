@@ -30,4 +30,9 @@ public class Colonne<V> {
     public void afficherContenu(){
         System.out.println(valeurs);
     }
+
+    /* VALIDATION DES MÉTHODES */
+    public static void main(String[] args) {
+        assert ()
+    }
 }
