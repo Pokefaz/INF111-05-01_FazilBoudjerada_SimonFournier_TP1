@@ -1,47 +1,90 @@
 package baseDonnees;
 
-import baseDonnees.bases.InterfaceColonne;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
-import java.util.*;
+public class ColonneIndexee<V extends Comparable<V>> extends Colonne<V> {
 
-public class ColonneIndexee<V> extends Colonne<V>{
-    private List<V> valeurs;
-    private Map<V,Integer> indexMap;
+    private final List<ValeurIndexee> valeursIndexees;
 
-    public ColonneIndexee(){
-        this.valeurs = new ArrayList<V>();
-        this.indexMap = new HashMap<>();
+    public ColonneIndexee() {
+        valeursIndexees = new ArrayList<>();
     }
-
-
+    
     @Override
-    public void ajouterValeur(V valeur){
-        if(!indexMap.containsKey(valeur)){
-            valeurs.add(valeur);
-            indexMap.put(valeur, valeurs.size() - 1);
+    public void ajouterValeur(V valeur) {
+        super.ajouterValeur(valeur);
+        int index = getNbElements() - 1;
+        ValeurIndexee valIndexee = new ValeurIndexee(valeur, index);
+        insererValeurIndexee(valIndexee);
+    }
+    
+    @Override
+    public int obtenirIndex(V valeur) {
+        int indexValeurIndexee = rechercheDichotomique(valeur);
+        if (indexValeurIndexee == -1) {
+            return -1;
         }
+        return valeursIndexees.get(indexValeurIndexee).index;
     }
-
+    
+    public boolean estUnique(V valeur) {
+        return rechercheDichotomique(valeur) == -1;
+    }
+    
     @Override
-    public int obtenirIndex(V valeur){
-        return indexMap.getOrDefault(valeur, -1);
+    public void changerValeur(int index, V valeur) {
+        throw new IndexOutOfBoundsException("ERREUR : cette méthode n'est " +
+                "pas supportée pour la classe colonneIndexee");
     }
-
-    public boolean estUnique(V valeur){
-        return !indexMap.containsKey(valeur);
-    }
-
+    
     @Override
-    public void changerValeur(int index, V valeur){
-        // Pas supporté par ColonneIndexee
-        throw new UnsupportedOperationException("\nImpossible de faire un changement de valeur" +
-                " d'object de type ColonneIndexee.\n");
+    public void afficherContenu() {
+        System.out.println("colonne indexée");
+        for (ValeurIndexee valIndexee : valeursIndexees) {
+            System.out.println(valIndexee.valeur + ":" + valIndexee.index);
+        }
+        System.out.println("colonne");
+        super.afficherContenu();
+    }
+    
+    private void insererValeurIndexee(ValeurIndexee valIndexee) {
+        int i = 0;
+        while (i < valeursIndexees.size() && valeursIndexees.get(i).valeur.compareTo(valIndexee.valeur) < 0) {
+            i++;
+        }
+        valeursIndexees.add(i, valIndexee);
+    }
+    
+    private int rechercheDichotomique(V valeur) {
+        int gauche = 0;
+        int droite = valeursIndexees.size() - 1;
+
+        while (gauche <= droite) {
+            int milieu = gauche + (droite - gauche) / 2;
+            int comparaison = valeursIndexees.get(milieu).valeur.compareTo(valeur);
+
+            if (comparaison == 0) {
+                return milieu;
+            }
+
+            if (comparaison < 0) {
+                gauche = milieu + 1;
+            } else {
+                droite = milieu - 1;
+            }
+        }
+        return -1;
     }
 
-    @Override
-    public void afficherContenu(){
-        for(Map.Entry<V,Integer> entry : indexMap.entrySet()){
-            System.out.println("Index : " + entry.getValue() + " - Valeur : " + entry.getKey());
+    private class ValeurIndexee {
+        V valeur;
+        int index;
+
+        ValeurIndexee(V valeur, int index) {
+            this.valeur = valeur;
+            this.index = index;
         }
     }
 
