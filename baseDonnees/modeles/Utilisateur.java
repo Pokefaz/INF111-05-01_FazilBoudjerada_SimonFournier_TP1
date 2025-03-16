@@ -1,6 +1,8 @@
 package baseDonnees.modeles;
 
 import java.lang.reflect.Array;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class Utilisateur {
@@ -13,7 +15,7 @@ public class Utilisateur {
     public Utilisateur(String nomUtilisateur, String motDePassee,
                        String numeroDeCompte, double solde){
         this.nomUtilisateur = nomUtilisateur;
-        this.hashPassword = hacherMotDePasse(motDePassee, getSalt());
+        this.hashPassword = hacherMotDePasse(motDePassee, this.getSalt());
         this.numeroDeCompte = numeroDeCompte;
         this.solde = solde;
     }
@@ -59,7 +61,13 @@ public class Utilisateur {
     }
 
     private byte[] hacherMotDePasse(String motDePasse, byte[] salt){
-
+        try {
+            MessageDigest md4 = MessageDigest.getInstance("SHA-256");
+            md4.update(salt);
+            return md4.digest(motDePasse.getBytes());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
     public boolean authentifier(String nomUtilisateur, String motDePasse){
         if(!this.nomUtilisateur.equals(nomUtilisateur)){
@@ -69,10 +77,16 @@ public class Utilisateur {
         return Arrays.equals(this.hashPassword, hacherTentative);
     }
     public void transactionSurSolde(double differentiel){
-
+        this.solde += differentiel;
     }
     @Override
     public String toString() {
-        return super.toString();
+        return "Utilisateur {" +
+                "nomUtilisateur: " + nomUtilisateur + "," +
+                "numeroDeCompte: " + numeroDeCompte + "," +
+                "solde: " + solde + "," +
+                "salt: " + Arrays.toString(salt) + "," +
+                "hashMotDePasse: " + Arrays.toString(hashPassword) + ","
+                + '}';
     }
 }
