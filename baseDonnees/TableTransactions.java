@@ -32,4 +32,3 @@ public class TableTransactions {
         return transactionsPourCompte;
     }
 }
-
