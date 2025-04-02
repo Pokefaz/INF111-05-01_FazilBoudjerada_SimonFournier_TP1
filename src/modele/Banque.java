@@ -73,6 +73,7 @@ public class Banque extends MonObservable{
 			
 			System.out.println("v�rification de l'utilisateur");
 			System.out.println(utilisateur.toString());
+			this.avertirLesObservers();								  /** AVERTIR LES OBSERVATEURS D'UNE MODIFICATION */
 			return utilisateur.authentifier(nomUtilisateur, motDePasse);
 		}else {
 			return false;
@@ -124,7 +125,7 @@ public class Banque extends MonObservable{
 		rafraichirUtilisateurActif();
 
 		// averti les observers de la mise � jours
-		this.avertirLesObservers();
+		this.avertirLesObservers();									  /** AVERTIR LES OBSERVATEURS D'UNE MODIFICATION */
 	}
 
 	/**
@@ -140,7 +141,7 @@ public class Banque extends MonObservable{
 		System.out.println(utilisateurActif);
 		
 		connecte = true;
-		this.avertirLesObservers();
+		this.avertirLesObservers();									  /** AVERTIR LES OBSERVATEURS D'UNE MODIFICATION */
 	}
 
 	/**
